@@ -115,5 +115,10 @@ app.post("/", async (req, res) => {
   res.send();
 });
 
+app.get("/", async(req, res)=>{
+  console.log('get request')
+  res.send("zzz")
+})
+
 app.listen(port);
 console.log(`app is listening on port ${port}`);
