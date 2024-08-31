@@ -20,9 +20,10 @@ app.use(cors());
 app.use(express.json());
 
 if(fs.existsSync('credentials.json')){
-  console.log('test.json already exists')
+  console.log('credentials.json already exists')
   return
 } else {
+  console.log('credentials.json does not exist- we\'ll create it')
   fs.writeFile('credentials.json', `{
       "installed": {
         "client_id": "598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com",
@@ -35,6 +36,8 @@ if(fs.existsSync('credentials.json')){
       }
     }
     `, (err)=>console.log(err))
+
+    console.log('we create it', fs.readFileSync('credentials.json'))
 }
 
 //functions
