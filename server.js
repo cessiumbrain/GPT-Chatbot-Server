@@ -19,6 +19,24 @@ require('dotenv').config()
 app.use(cors());
 app.use(express.json());
 
+if(fs.existsSync('credentials.json')){
+  console.log('test.json already exists')
+  return
+} else {
+  fs.writeFile('credentials.json', `{
+      "installed": {
+        "client_id": "598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com",
+        "project_id": "calendar-api-430519",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "${process.env.client_secret}",
+        "redirect_uris": ["http://localhost, https://gpt-chatbot-server-navy.vercel.app/"]
+      }
+    }
+    `, (err)=>console.log(err))
+}
+
 //functions
 const openai = new OpenAI({
   organization: process.env.organization,
