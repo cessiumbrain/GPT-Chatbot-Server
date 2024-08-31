@@ -5,7 +5,7 @@ const app = express();
 const cors = require("cors");
 const OpenAI = require("openai");
 
-const fs = require("fs").promises;
+const fs = require("fs");
 const path = require("path");
 const process = require("process");
 const { authenticate } = require("@google-cloud/local-auth");
