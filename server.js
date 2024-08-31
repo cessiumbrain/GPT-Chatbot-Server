@@ -31,7 +31,7 @@ if(fs.existsSync('credentials.json')){
         "token_uri": "https://oauth2.googleapis.com/token",
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_secret": "${process.env.client_secret}",
-        "redirect_uris": ["http://localhost, https://gpt-chatbot-server-navy.vercel.app/"]
+        "redirect_uris": ["http://localhost, https://gpt-chatbot-server.onrender.com"]
       }
     }
     `, (err)=>console.log(err))
