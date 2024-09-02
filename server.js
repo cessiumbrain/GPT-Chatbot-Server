@@ -4,8 +4,7 @@ const port = 3000;
 const app = express();
 const cors = require("cors");
 const OpenAI = require("openai");
-
-const fs = require("fs");
+const fs= require('fs')
 const path = require("path");
 const process = require("process");
 const { authenticate } = require("@google-cloud/local-auth");
@@ -19,25 +18,25 @@ require('dotenv').config()
 app.use(cors());
 app.use(express.json());
 
-if(fs.existsSync('credentials.json')){
-  console.log('credentials.json already exists')
-  return
-} else {
-  console.log('credentials.json does not exist- we\'ll create it')
-  fs.writeFile('credentials.json', `{
-      "installed": {
-        "client_id": "598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com",
-        "project_id": "calendar-api-430519",
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_secret": "${process.env.client_secret}",
-        "redirect_uris": ["http://localhost", "https://gpt-chatbot-server.onrender.com"]
-      }
-    }
-    `, (err)=>console.log(err))
+try {
 
-    console.log('we create it', fs.readFileSync('credentials.json'))
+  console.log('1. check if file exists')
+  fs.readFileSync('test.json', 'utf-8')
+} catch(e){
+  console.log('2. file doesnt exist, writing it')
+  fs.writeFileSync('hello.json', `
+    "property": "one",
+    "property2": "two"
+`)
+  
+}
+
+try {
+  console.log('3. trying to read the file')
+  const file = fs.readFileSync('hello.json', 'utf-8')
+  console.log(file)
+} catch(e){
+  console.log('4. couldnt read the file')
 }
 
 //functions
@@ -52,13 +51,13 @@ const openai = new OpenAI({
 
 //routes
 
-//
+//POST
 app.post("/", async (req, res) => {
   
-  console.log("incoming request");
+  console.log("incoming request:", req.body);
 
   let prevMsgHistory = [
-    { role: "user", content: "What is your schedule like for today?" },
+    ...req.body.messageHistory,
   ];
 
   const completion = await openai.chat.completions.create({
@@ -68,7 +67,7 @@ app.post("/", async (req, res) => {
       {
         name: "get_schedule",
         description:
-          "Get the bowling alley's daily schedule for the date in question.",
+          "Call this function to retrieve the bowling alleys daily schedule.",  
         parameters: {
           type: "object",
           properties: {
@@ -76,7 +75,7 @@ app.post("/", async (req, res) => {
               type: "string",
               format: "date-time",
               description:
-                "The date for which the user is requesting information.",
+                `The date for which the user is requesting information. For reference the current datetime is ${new Date()}, If the user implies a day with "tomorrow,  today, in 7 days etc..", calculate the correct date using the current datetime. `,
             },
           },
         },
@@ -84,8 +83,9 @@ app.post("/", async (req, res) => {
     ],
   });
 
+  //if the get_schedule function is called...
   if (completion.choices[0].message.function_call?.name === "get_schedule") {
-    console.log("gpt function call", console.log(completion.choices[0]));
+    console.log("gpt function call", completion.choices[0].message.function_call);
 
     //get the date the user is asking about
 
@@ -93,11 +93,13 @@ app.post("/", async (req, res) => {
       completion.choices[0].message.function_call.arguments
     ).date.substring(0, 10);
 
+
     const dateObject = new Date(dateString);
+ 
 
     //get the schedule for the appropriate date
     const schedule = await getSchedule(dateObject);
-      console.log('schedule', schedule)
+
     //add to the previous message history, a new system message that has the schedule
     prevMsgHistory.push({
       role: "system",
@@ -120,7 +122,7 @@ app.post("/", async (req, res) => {
                 type: "string",
                 format: "date-time",
                 description:
-                  "The date for which the user is requesting information.",
+                  `The date for which the user is requesting information. If the user requests date or time information in a verbal format such as 'tomorrow' or 'today' pass in the correct date based on today's date as ${new Date()}`,
               },
             },
           },
@@ -129,17 +131,16 @@ app.post("/", async (req, res) => {
     });
 
     console.log('api completion', APICompletion.choices[0].message)
-  } else {
+    res.send(APICompletion.choices[0].message)
+  } 
+  //else just send the normal response
+  else {
     console.log(completion.choices[0].message);
+    res.send(completion.choices[0].message)
   }
 
   res.send();
 });
-
-app.get("/", async(req, res)=>{
-  console.log('get request')
-  res.send("zzz")
-})
 
 app.listen(port);
 console.log(`app is listening on port ${port}`);
