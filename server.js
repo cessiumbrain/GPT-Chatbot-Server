@@ -18,22 +18,28 @@ require('dotenv').config()
 app.use(cors());
 app.use(express.json());
 
+
 try {
 
   console.log('1. check if file exists')
-  fs.readFileSync('test.json', 'utf-8')
+  fs.readFileSync('credentials', 'utf-8')
 } catch(e){
   console.log('2. file doesnt exist, writing it')
-  fs.writeFileSync('hello.json', `
-    "property": "one",
-    "property2": "two"
-`)
+  fs.writeFileSync('credentials.json', `{"installed": {
+    "client_id": "598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com",
+    "project_id": "calendar-api-430519",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "${process.env.client_secret}",
+    "redirect_uris": ["http://localhost, https://gpt-chatbot-server-navy.vercel.app/"]
+  }}`)
   
 }
 
 try {
   console.log('3. trying to read the file')
-  const file = fs.readFileSync('hello.json', 'utf-8')
+  const file = fs.readFileSync('credentials.json', 'utf-8')
   console.log(file)
 } catch(e){
   console.log('4. couldnt read the file')
