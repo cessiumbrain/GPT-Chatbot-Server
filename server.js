@@ -20,11 +20,8 @@ app.use(express.json());
 
 
 try {
-
-  console.log('1. check if file exists')
   fs.readFileSync('credentials', 'utf-8')
 } catch(e){
-  console.log('2. file doesnt exist, writing it')
   fs.writeFileSync('credentials.json', `{"installed": {
     "client_id": "598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com",
     "project_id": "calendar-api-430519",
@@ -42,7 +39,15 @@ try {
   const file = fs.readFileSync('credentials.json', 'utf-8')
   console.log(file)
 } catch(e){
-  console.log('4. couldnt read the file')
+  console.log('couldnt read the file credentials', e)
+}
+
+try {
+  fs.readFileSync('token.json', 'utf-8')
+}catch(e){
+  fs.writeFileSync('token.json', `{"type":"authorized_user","client_id":"598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com","client_secret":"${process.env.client_secret}","refresh_token":"1//05JyX7SRh-olvCgYIARAAGAUSNgF-L9IrCIBkeVYvYmXBC-xfumkhVGO5eHKP6qoVSdyLAp1E0ZJ643gdzNRDgZbpTUOIwg1aQA"}
+
+  `)
 }
 
 //functions

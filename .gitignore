@@ -3,3 +3,4 @@ token.json
 credentials.json
 node_modules/
 credentialsBackup.json
+tokenBackup.json
