@@ -45,9 +45,10 @@ try {
 try {
   fs.readFileSync('token.json', 'utf-8')
 }catch(e){
-  fs.writeFileSync('token.json', `{"type":"authorized_user","client_id":"598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com","client_secret":"${process.env.client_secret}","refresh_token":"1//05JyX7SRh-olvCgYIARAAGAUSNgF-L9IrCIBkeVYvYmXBC-xfumkhVGO5eHKP6qoVSdyLAp1E0ZJ643gdzNRDgZbpTUOIwg1aQA"}
+  const token = fs.writeFileSync('token.json', `{"type":"authorized_user","client_id":"598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com","client_secret":"${process.env.client_secret}","refresh_token":"1//05JyX7SRh-olvCgYIARAAGAUSNgF-L9IrCIBkeVYvYmXBC-xfumkhVGO5eHKP6qoVSdyLAp1E0ZJ643gdzNRDgZbpTUOIwg1aQA"}
 
   `)
+  console.log(token)
 }
 
 //functions
