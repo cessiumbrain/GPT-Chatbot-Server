@@ -18,7 +18,7 @@ require('dotenv').config()
 app.use(cors());
 app.use(express.json());
 
-
+//write credentials.json
 try {
   fs.readFileSync('credentials', 'utf-8')
 } catch(e){
@@ -33,7 +33,7 @@ try {
   }}`)
   
 }
-
+//read credentials.json
 try {
   console.log('3. trying to read the file')
   const file = fs.readFileSync('credentials.json', 'utf-8')
@@ -41,14 +41,20 @@ try {
 } catch(e){
   console.log('couldnt read the file credentials', e)
 }
-
+//write token.json
 try {
   fs.readFileSync('token.json', 'utf-8')
 }catch(e){
-  const token = fs.writeFileSync('token.json', `{"type":"authorized_user","client_id":"598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com","client_secret":"${process.env.client_secret}","refresh_token":"1//05JyX7SRh-olvCgYIARAAGAUSNgF-L9IrCIBkeVYvYmXBC-xfumkhVGO5eHKP6qoVSdyLAp1E0ZJ643gdzNRDgZbpTUOIwg1aQA"}
+  fs.writeFileSync('token.json', `{"type":"authorized_user","client_id":"598552846928-9alljq4igop0qbbjl1pt1or3ffmlum9v.apps.googleusercontent.com","client_secret":"${process.env.client_secret}","refresh_token":"1//05JyX7SRh-olvCgYIARAAGAUSNgF-L9IrCIBkeVYvYmXBC-xfumkhVGO5eHKP6qoVSdyLAp1E0ZJ643gdzNRDgZbpTUOIwg1aQA"}
 
   `)
+}
+
+try{
+  const token = fs.readFileSync('token.json', 'utf-8')
   console.log(token)
+} catch(e){
+  console.log(e)
 }
 
 //functions
